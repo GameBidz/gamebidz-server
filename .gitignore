@@ -1,0 +1,20 @@
+# Python
+*.pyc
+__pycache__/
+venv/
+*.env
+
+# Virtualenv
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+
+# Dependency management
+pip-lock.txt
