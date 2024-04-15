@@ -12,7 +12,7 @@ class User():
         email (str): The email address of the user.
     """
 
-    def __init__(self, id, username, password, email):
+    def __init__(self, id: int, username: str, password: str, email: str):
         self.id = id
         self.username = username
         self.password = password
@@ -24,7 +24,19 @@ class UserRepository(ABC):
     """Interface for interacting with user data in the database."""
 
     @abstractmethod
-    def get_user_by_id(self, id):
+    def get_users(self):
+        """Retrieve all users.
+
+        Returns:
+            List[User]: A list of user objects.
+
+        Raises:
+            NotImplementedError: If the method is not implemented by the subclass.
+        """
+        pass
+
+    @abstractmethod
+    def get_user_by_id(self, id: int):
         """Retrieve a user by their ID.
 
         Args:
@@ -39,7 +51,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def get_user_by_username(self, username):
+    def get_user_by_username(self, username: str):
         """Retrieve a user by their username.
 
         Args:
@@ -60,7 +72,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def get_user_by_email(self, email):
+    def get_user_by_email(self, email: str):
         """Retrieve a user by their email.
 
         Args:
@@ -75,7 +87,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user):
+    def create_user(self, user: User):
         """Create a new user.
 
         Args:
@@ -90,7 +102,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user):
+    def update_user(self, user: User):
         """Update an existing user.
 
         Args:
@@ -105,7 +117,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def delete_user(self, id):
+    def delete_user(self, id: int):
         """Delete a user by their ID.
 
         Args:
@@ -125,7 +137,7 @@ class UserService(ABC):
     """
 
     @abstractmethod
-    def get_user_by_id(self, id):
+    def get_user_by_id(self, id: int):
         """
         Get a user by their ID.
 
@@ -141,7 +153,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def get_user_by_username(self, username):
+    def get_user_by_username(self, username: str):
         """
         Get a user by their username.
 
@@ -157,7 +169,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def get_user_by_email(self, email):
+    def get_user_by_email(self, email: str):
         """
         Get a user by their email.
 
@@ -173,7 +185,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user):
+    def create_user(self, user: User):
         """
         Create a new user.
 
@@ -189,7 +201,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user):
+    def update_user(self, user: User):
         """
         Update an existing user.
 
@@ -205,7 +217,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def delete_user(self, id):
+    def delete_user(self, id: int):
         """
         Delete a user by their ID.
 
