@@ -1,4 +1,4 @@
-from app.db.models.user import User, UserRepository
+from app.db.models.user import User, UserJSON, UserRepository
 import pymysql
 
 # path: gamebidz-server/app/repositories/user-mysql.py
@@ -23,6 +23,8 @@ class UserMySQL(UserRepository):
         """
         with self.connection.cursor() as cursor:
             cursor.execute("SELECT * FROM users")
+            # for result in cursor.fetchall():
+            #     print(result)
             return [User(*result) for result in cursor.fetchall()]
 
     def get_user_by_id(self, id: int):
@@ -74,7 +76,7 @@ class UserMySQL(UserRepository):
                 return User(*result)
             return None
 
-    def create_user(self, username: str, password: str, email: str):
+    def create_user(self, user: UserJSON):
         """Create a new user.
 
         Args:
@@ -87,13 +89,13 @@ class UserMySQL(UserRepository):
         """
         with self.connection.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO users (username, password, email) VALUES (%s, %s, %s)",
-                (username, password, email)
+                "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)",
+                (user.username, user.email, user.password)
             )
             self.connection.commit()
-            return User(cursor.lastrowid, username, password, email)
+            return User(cursor.lastrowid, user.username, user.password, user.email)
 
-    def update_user(self, user: User):
+    def update_user(self, user_id: int, user: UserJSON):
         """Update a user.
 
         Args:
@@ -102,13 +104,16 @@ class UserMySQL(UserRepository):
         Returns:
             User: The updated user object.
         """
+        find_user = self.get_user_by_id(user_id)
+        if not find_user:
+            return None
         with self.connection.cursor() as cursor:
             cursor.execute(
                 "UPDATE users SET username = %s, password = %s, email = %s WHERE id = %s",
-                (user.username, user.password, user.email, user.id)
+                (user.username, user.password, user.email, user_id)
             )
             self.connection.commit()
-            return user
+            return find_user
 
     def delete_user(self, id: int):
         """Delete a user.
