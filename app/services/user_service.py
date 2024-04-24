@@ -1,6 +1,6 @@
 from app.db.models.user import UserService, User, UserJSON
 from app.repositories.user_repository import UserMySQL
-import pymysql
+import bcrypt
 
 
 class UserDefault(UserService):
@@ -20,6 +20,10 @@ class UserDefault(UserService):
         return self.user_repository.get_user_by_email(email)
 
     def create_user(self, user: UserJSON):
+        # hash the password
+        hashed_password = bcrypt.hashpw(
+            user.password.encode('utf-8'), bcrypt.gensalt())
+        user.password = hashed_password
         return self.user_repository.create_user(user)
 
     def update_user(self, user_id: int, user: User):
