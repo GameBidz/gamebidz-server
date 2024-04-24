@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pydantic import BaseModel
 
 
 class User():
@@ -12,11 +13,26 @@ class User():
         email (str): The email address of the user.
     """
 
-    def __init__(self, id: int, username: str, password: str, email: str):
+    def __init__(self, id: int, username: str, email: str, password: str):
         self.id = id
         self.username = username
-        self.password = password
         self.email = email
+        self.password = password
+
+
+class UserJSON(BaseModel):
+    """
+    Represents a user request.
+
+    Attributes:
+        username (str): The username of the user.
+        password (str): The password of the user.
+        email (str): The email address of the user.
+    """
+
+    username: str
+    email: str
+    password: str
 
 
 # User Repository
@@ -87,7 +103,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user: User):
+    def create_user(self, user: UserJSON):
         """Create a new user.
 
         Args:
@@ -102,7 +118,7 @@ class UserRepository(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user: User):
+    def update_user(self, user: UserJSON):
         """Update an existing user.
 
         Args:
@@ -185,7 +201,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def create_user(self, user: User):
+    def create_user(self, user: UserJSON):
         """
         Create a new user.
 
@@ -201,7 +217,7 @@ class UserService(ABC):
         pass
 
     @abstractmethod
-    def update_user(self, user: User):
+    def update_user(self, user: UserJSON):
         """
         Update an existing user.
 
