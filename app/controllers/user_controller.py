@@ -1,4 +1,4 @@
-from app.db.models.user import User, UserJSON
+from app.db.models.user import UserJSON
 from app.services.user_service import UserDefault
 from fastapi import Response, status
 
