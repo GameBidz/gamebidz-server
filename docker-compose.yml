@@ -1,0 +1,51 @@
+services:
+  db:
+    container_name: gamebidz_db
+    image: mariadb:10.6.17-focal
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DATABASE_PASS}
+      - MARIADB_DATABASE${DATABASE_NAME}
+      - MARIADB_USER=${DATABASE_USER}
+      - MARIADB_PASSWORD=${DATABASE_PASS}
+    ports:
+      - 3306:3306
+    volumes:
+      - gamebidz-vol:/var/lib/mysql:Z
+    restart: always
+
+  phpmyadmin:
+    depends_on:
+      - db
+    container_name: gamebidz_phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=${DATABASE_HOST}    
+      - PMA_PMADB=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASS}
+    ports:
+      - 8080:80
+    restart: always
+
+  # app:
+  #   container_name: gamebidz_app
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - .:/var/www/html
+  #   ports:
+  #     - 8000:8000
+  #   depends_on:
+  #     - db
+  #     - phpmyadmin
+  #   restart: always
+
+
+volumes:
+  gamebidz-vol:
+    external: false
+
+  
+
+  
