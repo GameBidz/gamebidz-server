@@ -18,13 +18,13 @@ router = APIRouter()
 
 # Define the route for retrieving all auctions.
 @router.get("/auctions")
-def get_auctions():
+def get_auctions() -> dict:
     return {"auctions": auction_controller.get_auctions()}
 
 
 # Define the route for retrieving an auction by its ID.
 @router.get("/auctions/{auction_id}")
-def get_auction_by_id(auction_id: int, response: Response):
+def get_auction_by_id(auction_id: int, response: Response) -> dict:
     auction = auction_controller.get_auction_by_id(auction_id)
     if not auction:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -34,23 +34,17 @@ def get_auction_by_id(auction_id: int, response: Response):
 
 # Define the route for retrieving all auctions for a user.
 @router.get("/auctions/user/{user_id}")
-def get_auctions_by_user_id(user_id: int):
+def get_auctions_by_user_id(user_id: int) -> dict:
     return {"auctions": auction_controller.get_auctions_by_user_id(user_id)}
 
 
 # Define the route for creating a new auction.
 @router.post("/auctions")
-def create_auction(auction):
+def create_auction(auction: dict) -> dict:
     return {"auction": auction_controller.create_auction(auction)}
 
 
 # Define the route for updating an auction.
 @router.put("/auctions")
-def update_auction(auction):
-    return {"auction": auction_controller.update_auction(auction)}
-
-
-# Define the route for deleting an auction.
-@router.delete("/auctions/{auction_id}")
-def delete_auction(auction_id: int):
-    return {"auction": auction_controller.delete_auction(auction_id)}
+def update_auction(id: int, state: int) -> dict:
+    return {"auction": auction_controller.update_auction(id, state)}

@@ -1,10 +1,10 @@
-from app.db.models.auction import Auction, AuctionService
+from app.db.models.auction import Auction, AuctionService, AuctionRepository
 
 
 class AuctionDefault(AuctionService):
     """Class for interacting with auction data in a default way."""
 
-    def __init__(self, auction_repository):
+    def __init__(self, auction_repository: AuctionRepository):
         """Initialize the AuctionDefault object.
 
         Args:
@@ -12,7 +12,7 @@ class AuctionDefault(AuctionService):
         """
         self.auction_repository = auction_repository
 
-    def get_auctions(self):
+    def get_auctions(self) -> list[Auction] | None:
         """Retrieve all auctions.
 
         Returns:
@@ -20,7 +20,7 @@ class AuctionDefault(AuctionService):
         """
         return self.auction_repository.get_auctions()
 
-    def get_auction_by_id(self, id):
+    def get_auction_by_id(self, id: int) -> Auction | None:
         """Retrieve an auction by its ID.
 
         Args:
@@ -31,7 +31,7 @@ class AuctionDefault(AuctionService):
         """
         return self.auction_repository.get_auction_by_id(id)
 
-    def get_auctions_by_user_id(self, user_id):
+    def get_auctions_by_user_id(self, user_id: int) -> list[Auction] | None:
         """Retrieve all auctions for a user.
 
         Args:
@@ -42,7 +42,7 @@ class AuctionDefault(AuctionService):
         """
         return self.auction_repository.get_auctions_by_user_id(user_id)
 
-    def create_auction(self, user_id, initial_amount, duration, state, created_at):
+    def create_auction(self, auction: Auction) -> Auction | None:
         """Create a new auction.
 
         Args:
@@ -50,14 +50,13 @@ class AuctionDefault(AuctionService):
             initial_amount (float): The initial amount of the auction.
             duration (int): The duration of the auction.
             state (str): The state of the auction.
-            created_at (datetime): The creation date of the auction.
 
         Returns:
             Auction: The auction object.
         """
-        return self.auction_repository.create_auction(user_id, initial_amount, duration, state, created_at)
+        return self.auction_repository.create_auction(auction)
 
-    def update_auction(self, auction):
+    def update_auction(self, id: int, state: str) -> Auction | None:
         """Update an auction.
 
         Args:
@@ -66,4 +65,4 @@ class AuctionDefault(AuctionService):
         Returns:
             Auction: The updated auction object.
         """
-        return self.auction_repository.update_auction(auction)
+        return self.auction_repository.update_auction(id, state)

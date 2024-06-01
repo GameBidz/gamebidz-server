@@ -1,5 +1,5 @@
-from app.db.models.auction import Auction, AuctionRepository
-import pymysql
+from app.db.models.auction import Auction, AuctionRepository, State
+import pymysql, datetime
 
 
 class AuctionMySQL(AuctionRepository):
@@ -27,7 +27,7 @@ class AuctionMySQL(AuctionRepository):
             cursor.execute("SELECT * FROM auctions")
             return [Auction(*result) for result in cursor.fetchall()]
 
-    def get_auction_by_id(self, id: int):
+    def get_auction_by_id(self, id: int) -> Auction | None:
         """
         Retrieves an auction by its ID from the database.
 
@@ -44,10 +44,9 @@ class AuctionMySQL(AuctionRepository):
                 return Auction(*result)
             return None
 
-    def get_auctions_by_user_id(self, user_id: int):
+    def get_auctions_by_user_id(self, user_id: int) -> list[Auction] | None:
         """
         Retrieves all auctions associated with a specific user from the database.
-
         Args:
             user_id (int): The ID of the user.
 
@@ -59,7 +58,7 @@ class AuctionMySQL(AuctionRepository):
                 "SELECT * FROM auctions WHERE user_id = %s", (user_id,))
             return [Auction(*result) for result in cursor.fetchall()]
 
-    def create_auction(self, user_id: int, initial_amount: float, duration: int):
+    def create_auction(self, auction: Auction) -> Auction | None:
         """
         Creates a new auction in the database.
 
@@ -71,13 +70,18 @@ class AuctionMySQL(AuctionRepository):
         Returns:
             Auction: The Auction object representing the created auction.
         """
+
+        created_at = datetime.now()
+        updated_at = datetime.now()
+
+
         with self.connection.cursor() as cursor:
-            cursor.execute("INSERT INTO auctions (user_id, initial_amount, duration, state) VALUES (%s, %s, %s, 'active')",
-                           (user_id, initial_amount, duration))
+            cursor.execute("INSERT INTO auctions (user_id, initial_amount, duration, state, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s)",
+                           (auction.user_id, auction.initial_amount, auction.duration, State.ACTIVE, created_at, updated_at))
             self.connection.commit()
             return self.get_auction_by_id(cursor.lastrowid)
 
-    def update_auction(self, id: int, state: str):
+    def update_auction(self, id: int, state: str) -> Auction | None:
         """
         Updates the state of an auction in the database.
 
@@ -88,13 +92,16 @@ class AuctionMySQL(AuctionRepository):
         Returns:
             Auction: The Auction object representing the updated auction.
         """
+
+        updated_at = datetime.now()
+
         with self.connection.cursor() as cursor:
             cursor.execute(
-                "UPDATE auctions SET state = %s WHERE id = %s", (state, id))
+                "UPDATE auctions SET state = %s, updated_at = %s WHERE id = %s", (state, updated_at, id))
             self.connection.commit()
             return self.get_auction_by_id(id)
 
-    def get_auctions_by_state(self, state: str):
+    def get_auctions_by_state(self, state: str) -> list[Auction] | None:
         """
         Retrieves all auctions with a specific state from the database.
 
@@ -108,7 +115,7 @@ class AuctionMySQL(AuctionRepository):
             cursor.execute("SELECT * FROM auctions WHERE state = %s", (state,))
             return [Auction(*result) for result in cursor.fetchall()]
 
-    def delete_auction(self, id: int):
+    def delete_auction(self, id: int) -> bool:
         """
         Deletes an auction from the database.
 
