@@ -15,7 +15,7 @@ class UserMySQL(UserRepository):
         """
         self.connection = connection
 
-    def get_users(self):
+    def get_users(self) -> list[User]:
         """Retrieve all users.
 
         Returns:
@@ -25,7 +25,7 @@ class UserMySQL(UserRepository):
             cursor.execute("SELECT * FROM users")
             return [User(*result) for result in cursor.fetchall()]
 
-    def get_user_by_id(self, id: int):
+    def get_user_by_id(self, id: int) -> User:
         """Retrieve a user by their ID.
 
         Args:
@@ -41,7 +41,7 @@ class UserMySQL(UserRepository):
                 return User(*result)
             return None
 
-    def get_user_by_username(self, username: str):
+    def get_user_by_username(self, username: str) -> User:
         """Retrieve a user by their username.
 
         Args:
@@ -58,7 +58,7 @@ class UserMySQL(UserRepository):
                 return User(*result)
             return None
 
-    def get_user_by_email(self, email: str):
+    def get_user_by_email(self, email: str) -> User:
         """Retrieve a user by their email.
 
         Args:
@@ -74,7 +74,7 @@ class UserMySQL(UserRepository):
                 return User(*result)
             return None
 
-    def create_user(self, user: UserJSON):
+    def create_user(self, user: UserJSON) -> User:
         """Create a new user.
 
         Args:
@@ -93,7 +93,7 @@ class UserMySQL(UserRepository):
             self.connection.commit()
             return User(cursor.lastrowid, user.username, user.password, user.email)
 
-    def update_user(self, user_id: int, user: UserJSON):
+    def update_user(self, user_id: int, user: UserJSON) -> User:
         """Update a user.
 
         Args:
@@ -112,13 +112,3 @@ class UserMySQL(UserRepository):
             )
             self.connection.commit()
             return find_user
-
-    def delete_user(self, id: int):
-        """Delete a user.
-
-        Args:
-            id (int): The ID of the user.
-        """
-        with self.connection.cursor() as cursor:
-            cursor.execute("DELETE FROM users WHERE id = %s", (id,))
-            self.connection.commit()
