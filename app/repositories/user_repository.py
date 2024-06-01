@@ -23,8 +23,6 @@ class UserMySQL(UserRepository):
         """
         with self.connection.cursor() as cursor:
             cursor.execute("SELECT * FROM users")
-            # for result in cursor.fetchall():
-            #     print(result)
             return [User(*result) for result in cursor.fetchall()]
 
     def get_user_by_id(self, id: int):

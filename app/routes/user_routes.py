@@ -8,9 +8,9 @@ from app.db.db import connection
 # Create a new instance of the UserMySQL class.
 rp = UserMySQL(connection)
 # Create a new instance of the UserDefault class.
-sv = UserDefault(connection)
+sv = UserDefault(rp)
 # Create a new instance of the UserController class.
-hd = UserController(connection)
+hd = UserController(sv)
 
 # Define the router for the user routes.
 router = APIRouter()
