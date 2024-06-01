@@ -7,6 +7,7 @@ venv/
 # Virtualenv
 .env
 .env.*
+.venv
 
 # IDE
 .vscode/
