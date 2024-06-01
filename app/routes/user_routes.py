@@ -6,53 +6,65 @@ from app.repositories.user_repository import UserMySQL
 from app.db.db import connection
 
 # Create a new instance of the UserMySQL class.
-user_repository = UserMySQL(connection)
+rp = UserMySQL(connection)
 # Create a new instance of the UserDefault class.
-user_service = UserDefault(user_repository)
+sv = UserDefault(connection)
 # Create a new instance of the UserController class.
-hd = UserController(user_service)
+hd = UserController(connection)
 
+# Define the router for the user routes.
 router = APIRouter()
 
 
-@router.get("/users", tags=["users"])
+# Define the route for retrieving all users.
+@router.get("/users")
 def get_users():
     return {"users": hd.get_users()}
 
 
-@router.get("/users/{user}", tags=["users"])
-def get_user(user: str, response: Response):
-    """
-    Retrieve user information based on the provided user identifier.
-
-    Args:
-        user (str): The user identifier. Can be an integer user ID, an username or an email address.
-        response (Response): The FastAPI response object.
-
-    Returns:
-        The user information as a JSON response.
-    """
-    try:
-        user = int(user)
-        return hd.get_user_by_id(user, response)
-    except ValueError:
-        # Validate if user given is an email
-        if "@" in user:
-            return hd.get_user_by_email(user, response)
-
-    return hd.get_user_by_username(user, response)
+# Define the route for retrieving a user by their ID.
+@router.get("/users/{user_id}")
+def get_user_by_id(user_id: int, response: Response):
+    user = hd.get_user_by_id(user_id)
+    if not user:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error": "User not found"}
+    return {"user": hd.get_user_by_id(user_id)}
 
 
-@router.post("/users", tags=["users"])
-def create_user(user: UserJSON, response: Response):
-    return {"user": hd.create_user(user, response)}
+# Define the route for retrieving a user by their username.
+@router.get("/users/{username}")
+def get_user_by_username(username: str, response: Response):
+    user = hd.get_user_by_username(username)
+    if not user:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error": "User not found"}
+    return {"user": hd.get_user_by_username(username)}
 
 
-@router.patch("/users/{user_id}", tags=["users"])
-def update_user(user_id: int, user: UserJSON):
-    return {"user": hd.update_user(user_id, user)}
+# Define the route for retrieving a user by their email.
+@router.get("/users/{email}")
+def get_user_by_email(email: str, response: Response):
+    user = hd.get_user_by_email(email)
+    if not user:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error": "User not found"}
+    return {"user": hd.get_user_by_email(email)}
 
 
-@router.delete("/users/{user_id}", tags=["users"])
+# Define the route for creating a new user.
+@router.post("/users")
+def create_user(username: str, email: str, password: str):
+    return {"user": hd.create_user(username, email, password)}
+
+
+# Define the route for updating a user.
+@router.put("/users")
+def update_user(user):
+    return {"user": hd.update_user(user)}
+
+
+# Define the route for deleting a user.
+@router.delete("/users/{user_id}")
 def delete_user(user_id: int):
     return {"user": hd.delete_user(user_id)}
