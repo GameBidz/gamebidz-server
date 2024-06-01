@@ -132,18 +132,6 @@ class UserRepository(ABC):
         """
         pass
 
-    @abstractmethod
-    def delete_user(self, id: int):
-        """Delete a user by their ID.
-
-        Args:
-            id (int): The ID of the user to be deleted.
-
-        Raises:
-            NotImplementedError: If the method is not implemented by the subclass.
-        """
-        pass
-
 # User Service
 
 
@@ -226,19 +214,6 @@ class UserService(ABC):
 
         Returns:
             User: The updated user object.
-
-        Raises:
-            NotImplementedError: If the method is not implemented by the subclass.
-        """
-        pass
-
-    @abstractmethod
-    def delete_user(self, id: int):
-        """
-        Delete a user by their ID.
-
-        Args:
-            id (int): The ID of the user to delete.
 
         Raises:
             NotImplementedError: If the method is not implemented by the subclass.
