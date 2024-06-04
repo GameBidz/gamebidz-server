@@ -27,25 +27,21 @@ services:
       - 8080:80
     restart: always
 
-  # app:
-  #   container_name: gamebidz_app
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - .:/var/www/html
-  #   ports:
-  #     - 8000:8000
-  #   depends_on:
-  #     - db
-  #     - phpmyadmin
-  #   restart: always
+  app:
+    container_name: gamebidz_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+      - phpmyadmin
+    restart: always
 
 
 volumes:
   gamebidz-vol:
     external: false
-
-  
-
-  

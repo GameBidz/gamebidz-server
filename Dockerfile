@@ -18,7 +18,7 @@ RUN poetry config virtualenvs.create false && \
 
 
 # Run main.py when the container launches
-CMD ["poetry", "run", "fastapi", "dev", "app/main.py"]
+CMD ["poetry", "run", "fastapi", "dev", "app/main.py", "--host", "0.0.0.0"]
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
