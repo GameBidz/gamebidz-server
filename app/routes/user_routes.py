@@ -18,21 +18,17 @@ router = APIRouter()
 
 # Define the route for retrieving all users.
 @router.get("/users")
-def get_users():
+def get_users(response: Response, email: str | None = None, username: str | None = None):
+    if email:
+        return {"users": hd.get_user_by_email(email, response)}
+    if username:
+        return {"users": hd.get_user_by_username(username, response)}
     return {"users": hd.get_users()}
 
 
 # Define the route for retrieving a user by their ID.
 @router.get("/users/{user}")
-def get_user(user: str, response: Response):
-    try:
-        user = int(user)
-        return hd.get_user_by_id(user, response)
-    except ValueError:
-        # Validate if user given is an email
-        if "@" in user:
-            return hd.get_user_by_email(user, response)
-
+def get_user(user: int, response: Response):
     return hd.get_user_by_username(user, response)
 
 

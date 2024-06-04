@@ -7,7 +7,7 @@ dotenv.load_dotenv('.env')
 
 # Establish a connection to the database
 connection = pymysql.connect(
-    host="localhost",
+    host=os.environ.get("DATABASE_HOST"),
     user=os.environ.get("DATABASE_USER"),
     password=os.environ.get("DATABASE_PASS"),
     database=os.environ.get("DATABASE_NAME"),
