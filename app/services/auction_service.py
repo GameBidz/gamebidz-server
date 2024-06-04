@@ -1,10 +1,11 @@
-from app.db.models.auction import Auction, AuctionService, AuctionRepository
+from app.db.models.auction import Auction, AuctionService, AuctionJSON
+from app.repositories.auction_repository import AuctionMySQL
 
 
 class AuctionDefault(AuctionService):
     """Class for interacting with auction data in a default way."""
 
-    def __init__(self, auction_repository: AuctionRepository):
+    def __init__(self, auction_repository: AuctionMySQL):
         """Initialize the AuctionDefault object.
 
         Args:
@@ -42,7 +43,7 @@ class AuctionDefault(AuctionService):
         """
         return self.auction_repository.get_auctions_by_user_id(user_id)
 
-    def create_auction(self, auction: Auction) -> Auction | None:
+    def create_auction(self, auction: AuctionJSON) -> Auction | None:
         """Create a new auction.
 
         Args:

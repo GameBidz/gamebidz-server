@@ -1,11 +1,11 @@
-from app.services.auction_service import AuctionService
-from app.db.models.auction import Auction
+from app.services.auction_service import AuctionDefault
+from app.db.models.auction import Auction, AuctionJSON
 
 
-class AuctionController:
+class AuctionController():
     """Class for interacting with auctions."""
 
-    def __init__(self, auction_service: AuctionService):
+    def __init__(self, auction_service: AuctionDefault):
         """Initialize the AuctionController object.
 
         Args:
@@ -43,7 +43,7 @@ class AuctionController:
         """
         return self.auction_service.get_auctions_by_user_id(user_id)
     
-    def create_auction(self, auction: Auction) -> Auction | None:
+    def create_auction(self, auction: AuctionJSON) -> Auction | None:
         """Create a new auction.
 
         Args:

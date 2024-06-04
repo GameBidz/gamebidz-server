@@ -1,5 +1,6 @@
-from app.db.models.auction import Auction, AuctionRepository, State
-import pymysql, datetime
+from app.db.models.auction import Auction, AuctionRepository, State, AuctionJSON
+from datetime import datetime
+import pymysql
 
 
 class AuctionMySQL(AuctionRepository):
@@ -58,28 +59,30 @@ class AuctionMySQL(AuctionRepository):
                 "SELECT * FROM auctions WHERE user_id = %s", (user_id,))
             return [Auction(*result) for result in cursor.fetchall()]
 
-    def create_auction(self, auction: Auction) -> Auction | None:
+    def create_auction(self, auction: AuctionJSON) -> Auction | None:
         """
         Creates a new auction in the database.
 
         Args:
-            user_id (int): The ID of the user creating the auction.
-            initial_amount (float): The initial amount for the auction.
-            duration (int): The duration of the auction in seconds.
+            auction (Auction): The Auction object representing the auction to create.
 
         Returns:
             Auction: The Auction object representing the created auction.
         """
 
-        created_at = datetime.now()
-        updated_at = datetime.now()
+        created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        updated_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        last_id = 0
 
 
         with self.connection.cursor() as cursor:
             cursor.execute("INSERT INTO auctions (user_id, initial_amount, duration, state, created_at, updated_at) VALUES (%s, %s, %s, %s, %s, %s)",
-                           (auction.user_id, auction.initial_amount, auction.duration, State.ACTIVE, created_at, updated_at))
+                           (auction.user_id, auction.initial_amount, auction.duration, State.ACTIVE.value, created_at, updated_at))
             self.connection.commit()
-            return self.get_auction_by_id(cursor.lastrowid)
+            last_id = cursor.lastrowid
+
+        return self.get_auction_by_id(last_id)
 
     def update_auction(self, id: int, state: str) -> Auction | None:
         """

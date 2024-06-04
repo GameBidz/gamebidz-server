@@ -1,12 +1,27 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
+from pydantic import BaseModel
 
 # state enum
 class State(Enum):
     ACTIVE = 'active'
     FINISHED = 'finished'
     CANCELED = 'canceled'
+
+class AuctionJSON(BaseModel):
+    """
+    Represents an auction request.
+
+    Attributes:
+        user_id (int): The ID of the user who published the auction.
+        initial_amount (float): The initial amount of the auction.
+        duration (int): The duration of the auction in minutes.
+    """
+
+    user_id: int
+    initial_amount: int
+    duration: int
 
 class Auction():
     """
@@ -21,7 +36,7 @@ class Auction():
         created_at (datetime): The timestamp when the auction was created.
     """
 
-    def __init__(self, id: int, user_id: int, initial_amount: float, duration: int, state: str, created_at: datetime, updated_at: datetime):
+    def __init__(self, id: int, user_id: int, initial_amount: int, duration: int, state: str, created_at: datetime, updated_at: datetime):
         self.id = id
         self.user_id = user_id
         self.initial_amount = initial_amount
@@ -76,7 +91,7 @@ class AuctionRepository(ABC):
         pass
 
     @abstractmethod
-    def create_auction(self, auction: Auction) -> Auction | None:
+    def create_auction(self, auction: AuctionJSON) -> Auction | None:
         """Create a new auction.
 
         Args:
